@@ -1,0 +1,34 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_appwidget"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/appwidget_margin"
+    android:paddingStart="@dimen/appwidget_margin"
+    android:paddingEnd="@dimen/appwidget_margin"
+    android:paddingBottom="32dp">
+
+    <TextView
+        android:id="@+id/appwidget_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:contentDescription="@string/title"
+        android:text="@string/saved_parking"
+        android:textColor="#ffffff"
+        android:textSize="12sp"
+        android:textStyle="bold|italic" />
+
+    <TextView
+        android:id="@+id/appwidget_message"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        tools:text="Move by 3PM Mon Nov 12, 2018" />
+</LinearLayout>

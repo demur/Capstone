@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/snackbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dark_grey"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/action_save"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:gravity="center"
+            android:text="@string/save"
+            android:textColor="@color/snack_save" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/action_cancel"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:gravity="center"
+            android:text="@string/cancel" />
+    </LinearLayout>
+</layout>

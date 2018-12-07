@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">JC On-Street Parking Helper</string>
+    <string name="title_activity_main">JC On-Street Parking Helper</string>
+    <plurals name="period_days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="period_hours">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+    <plurals name="period_minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <string name="move_by">Move by %s</string>
+    <string name="period_till">till %s</string>
+    <string name="period_from">from %s</string>
+    <string name="parking_allowed_for">Parking is allowed for %s</string>
+    <string name="parking_prohibited_for">Parking is prohibited for %s</string>
+    <string name="action_share">Share my location</string>
+    <string name="message_to_share">The car is parked right here https://www.google.com/maps/search/?api=1&amp;query=%1$f,%2$f\nIt can stay there %3$s</string>
+    <string name="nothing_to_share">Unfortunately there is nothing to share at the moment</string>
+    <string name="share_location_choose_title">Share parking location…</string>
+    <string name="having_parked">Having parked at %s</string>
+    <string name="appwidget_no_info">Nothing to display at the moment</string>
+    <string name="cant_save_prohibited">Can\'t save location when parking is not allowed</string>
+    <string name="permission_explanation">Location permission is not required, but recommended to help you see your location on the map</string>
+    <string name="permission_warning">Permission is not available. Requesting location permission.</string>
+    <string name="permission_request_launch_approval">OK</string>
+    <string name="look_for_parking">Look for parking</string>
+    <string name="zones_over_city">Zones over city</string>
+    <string name="about">About</string>
+    <string name="report">Report</string>
+    <string name="date_and_time_picker_icon">Date and time picker icon</string>
+    <string name="use_current_date_and_time">Use current date and time</string>
+    <string name="use_selected_date_and_time">Use selected date and time</string>
+    <string name="hours">hours</string>
+    <string name="permit">permit</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="title">Title</string>
+    <string name="saved_parking">Saved Parking</string>
+    <string name="marker_placeholder_content_description">Marker that help adjusting parking location</string>
+    <string name="spinner_option_zone">Zone %d</string>
+    <string name="spinner_option_no_permit">No</string>
+    <string name="title_activity_report">Report</string>
+    <string name="report_submit_failed">Failed to complete submission. Try again</string>
+    <string name="report_submit_success">Your report has successfully submitted. Thank you</string>
+    <string name="progress_dialog_uploading">Uploading…</string>
+    <string name="chooser_title">Complete action using</string>
+    <string name="report_submit_error">Failed %s</string>
+    <string name="progress_dialog_update">Uploaded %d%%</string>
+    <string name="report_submit">Submit</string>
+    <string name="report_description_optional">Description (optional)</string>
+    <string name="image_preview_content_description">Image preview before uploading</string>
+    <string name="report_choose_image">Choose image</string>
+    <string name="title_activity_about">About</string>
+    <string name="about_text">\t\tThe information about permitted parking, street cleaning periods and holidays honored by JC Parking Authority is supplied from Jersey City municipal code presented at https://library.municode.com/nj/jersey_city.\n\n
+        \t\tUse this application only as a helper and always check the parking signs as the data in municipal code may be different from the current regulations at the specific location. If you spot any discrepancies you are welcome to report them.\n\n
+        \t\tDeveloper of this application cannot be held responsible for any parking violations conducted while relying on the information provided by this software.</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+</resources>

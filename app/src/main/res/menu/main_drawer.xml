@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_look4parking"
+            android:checkable="true"
+            android:checked="true"
+            android:title="@string/look_for_parking" />
+        <item
+            android:id="@+id/nav_date"
+            android:checkable="false"
+            android:title="@null" /><!--Date and time picker-->
+            <!--app:actionLayout="@layout/nav_date_time_switch"-->
+        <item
+            android:id="@+id/nav_duration"
+            android:checkable="false"
+            android:title="@null" /><!--Duration picker-->
+            <!--app:actionLayout="@layout/nav_duration_switch"-->
+        <item
+            android:id="@+id/nav_zone_permit"
+            android:checkable="false"
+            android:title="@null" /><!--Zone permit picker-->
+            <!--app:actionLayout="@layout/nav_zone_permit"-->
+    </group>
+    <group
+        android:id="@+id/nav_other_actions"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_zones_over_downtown"
+            android:checkable="true"
+            android:title="@string/zones_over_city" />
+        <item
+            android:id="@+id/nav_about"
+            android:checkable="false"
+            android:title="@string/about" />
+        <item
+            android:id="@+id/nav_report"
+            android:checkable="false"
+            android:title="@string/report" />
+    </group>
+</menu>

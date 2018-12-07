@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#607D8B</color>
+    <color name="colorPrimaryDark">#455A64</color>
+    <color name="colorAccent">#03A9F4</color>
+    <color name="dark_grey">#525F6B</color>
+    <color name="red_700">#D32F2F</color>
+    <color name="yellow_700">#FBC02D</color>
+    <color name="green_700">#388E3C</color>
+    <color name="red_900">#B71C1C</color>
+    <color name="light_gray">#FFCCCCCC</color>
+
+    <color name="parking_prohibited">@color/red_700</color>
+    <color name="parking_limited">@color/yellow_700</color>
+    <color name="parking_allowed">@color/green_700</color>
+
+    <color name="snackbar_warning_background">@color/red_900</color>
+    <color name="snackbar_text">@color/white</color>
+    <color name="nav_view_action_enabled">@color/black</color>
+    <color name="nav_view_action_disabled">@color/light_gray</color>
+
+    <color name="bright_pink">#FF007F</color>
+    <color name="red">#FF0000</color>
+    <color name="orange">#FF7F00</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="chartreuse">#7FFF00</color>
+    <color name="green">#00FF00</color>
+    <color name="spring_green">#00FF7F</color>
+    <color name="cyan">#00FFFF</color>
+    <color name="azure">#007FFF</color>
+    <color name="blue">#0000FF</color>
+    <color name="violet">#7F00FF</color>
+    <color name="magenta">#FF00FF</color>
+    <color name="french_pass">#A6CEE3</color>
+    <color name="lochmara">#1F78B4</color>
+    <color name="feijoa">#B2DF8A</color>
+    <color name="fiery_orange">#B15928</color>
+
+    <array name="zones">
+        <item>@color/red</item>
+        <item>@color/violet</item>
+        <item>@color/yellow</item>
+        <item>@color/chartreuse</item>
+        <item>@color/fiery_orange</item>
+        <item>@color/lochmara</item>
+        <item>@color/orange</item>
+        <item>@color/spring_green</item>
+        <item>@color/cyan</item>
+        <item>@color/azure</item>
+        <item>@color/blue</item>
+        <item>@color/magenta</item>
+        <item>@color/green</item>
+        <item>@color/french_pass</item>
+        <item>@color/bright_pink</item>
+        <item>@color/feijoa</item>
+    </array>
+</resources>

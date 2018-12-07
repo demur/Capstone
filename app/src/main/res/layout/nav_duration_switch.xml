@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.udacity.demur.capstone.model.MainActivityViewModel" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.michaelmuenzer.android.scrollablennumberpicker.ScrollableNumberPicker
+            android:id="@+id/snp_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:snp_buttonBackgroundTintSelector="@color/colorAccent"
+            app:snp_buttonTouchScaleFactor="1.5"
+            app:snp_minValue="1"
+            app:snp_orientation="horizontal"
+            app:snp_scrollEnabled="true"
+            app:snp_stepSize="1"
+            app:snp_value="2"
+            app:snp_value_text_color="@color/black" />
+
+        <TextView
+            android:id="@+id/nav_duration_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/hours"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/snp_duration"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+</layout>

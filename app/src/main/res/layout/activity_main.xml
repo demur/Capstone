@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.udacity.demur.capstone.model.MainActivityViewModel" />
+    </data>
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/coordinator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    android:fitsSystemWindows="true"
+                    android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:map="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    map:cameraTargetLat="@dimen/map_camera_target_lat"
+                    map:cameraTargetLng="@dimen/map_camera_target_lng"
+                    map:cameraZoom="@dimen/map_camera_zoom"
+                    map:layout_constraintBottom_toBottomOf="parent"
+                    map:layout_constraintTop_toBottomOf="@id/toolbar"
+                    map:mapType="normal"
+                    map:uiCompass="false"
+                    map:uiRotateGestures="false"
+                    map:uiScrollGestures="true"
+                    map:uiTiltGestures="false"
+                    map:uiZoomControls="false"
+                    map:uiZoomGestures="true"
+                    tools:context=".MainActivity" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/pb_height"
+                    android:layout_marginTop="@dimen/pb_margin_top"
+                    android:background="@android:color/transparent"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:min="0"
+                    android:paddingTop="@dimen/pb_margin_top"
+                    android:visibility="gone"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+                <ImageView
+                    android:id="@+id/marker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/iv_marker_start_offset"
+                    android:layout_marginBottom="@dimen/iv_marker_bottom_offset"
+                    android:contentDescription="@string/marker_placeholder_content_description"
+                    android:src="@drawable/ic_parking"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@id/map"
+                    app:layout_constraintLeft_toLeftOf="@id/map"
+                    app:layout_constraintRight_toRightOf="@id/map"
+                    app:layout_constraintTop_toTopOf="@id/map" />
+
+                <ImageView
+                    android:id="@+id/iv_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:src="@drawable/tip"
+                    android:tint="@color/colorPrimary"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toTopOf="@id/marker"
+                    app:layout_constraintLeft_toLeftOf="@id/map"
+                    app:layout_constraintRight_toRightOf="@id/map" />
+
+                <TextView
+                    android:id="@+id/tv_tooltip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/tv_tooltip_margin"
+                    android:layout_marginEnd="@dimen/tv_tooltip_margin"
+                    android:background="@drawable/rounded_corners"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:gravity="bottom|center"
+                    android:padding="@dimen/tv_tooltip_padding_top_bottom"
+                    android:paddingStart="@dimen/tv_tooltip_padding_sides"
+                    android:paddingEnd="@dimen/tv_tooltip_padding_sides"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:visibility="invisible"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toTopOf="@id/iv_tip"
+                    app:layout_constraintLeft_toLeftOf="@id/map"
+                    app:layout_constraintRight_toRightOf="@id/map" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_margin="@dimen/fab_margin"
+                android:src="@{null==viewModel.parkingMarker?@drawable/ic_place:@drawable/ic_delete}"
+                app:elevation="4dp" />
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <android.support.design.widget.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:menu="@menu/main_drawer" />
+    </android.support.v4.widget.DrawerLayout>
+</layout>
