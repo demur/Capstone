@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".AboutActivity">
 
     <android.support.v7.widget.Toolbar
@@ -29,8 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="web"
-            android:textSize="@dimen/about_tv_text_size"
-            android:text="@string/about_text" />
+            android:text="@string/about_text"
+            android:textSize="@dimen/about_tv_text_size" />
     </ScrollView>
 
 </android.support.constraint.ConstraintLayout>
