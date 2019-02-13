@@ -2,8 +2,6 @@ package com.udacity.demur.capstone.service;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -12,6 +10,7 @@ import com.google.maps.android.geometry.Point;
 import com.udacity.demur.capstone.MainActivity;
 import com.udacity.demur.capstone.R;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,14 +24,19 @@ import static com.google.maps.android.SphericalUtil.computeDistanceBetween;
 
 public class Utilities {
     /*
-     * This function is the product of gar at https://stackoverflow.com/a/4009133
+     * This function is the product of Levit at https://stackoverflow.com/a/27312494
      * suggested to use by Udacity to implement network connection check
      * */
-    public static boolean isOnline(Context context) {
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = null != cm ? cm.getActiveNetworkInfo() : null;
-        return null != netInfo && netInfo.isConnectedOrConnecting();
+    public static boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static Bounds llb2b(LatLngBounds llb) {
