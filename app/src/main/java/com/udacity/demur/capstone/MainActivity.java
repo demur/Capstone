@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mViewModel.setParkingMarker(mMap.addMarker(baseMarkerOptions()
                         .position(new LatLng(Double.parseDouble(latLng[0]), Double.parseDouble(latLng[1])))
                         .title(Utilities.periodInBetween(mContext, mParkingLimit, mParkingStart))
-                        .snippet(Utilities.formatMarketSnippet(mContext, mParkingLimit, mParkingStart))
+                        .snippet(Utilities.formatMarkerSnippet(mContext, mParkingLimit, mParkingStart))
                 ));
                 mViewModel.getParkingMarker().showInfoWindow();
                 invalidateOptionsMenu();
@@ -538,7 +538,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         if (null != mViewModel.getParkingMarker() && null != mParkingLimit && null == mParkingStart) {
             mViewModel.getParkingMarker().setTitle(Utilities.periodInBetween(mContext, mParkingLimit, null));
-            mViewModel.getParkingMarker().setSnippet(Utilities.formatMarketSnippet(mContext, mParkingLimit, null));
+            mViewModel.getParkingMarker().setSnippet(Utilities.formatMarkerSnippet(mContext, mParkingLimit, null));
         }
         if (mSyntheticCameraMove) {
             Street targetStreet = mStreets.get(mParkingMarkerPolylineIndex);
@@ -1145,7 +1145,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mViewModel.setParkingMarker(mMap.addMarker(baseMarkerOptions()
                         .position(mMapCenter4MarkerSetup)
                         .title(Utilities.periodInBetween(mContext, mParkingLimit, mParkingStart))
-                        .snippet(Utilities.formatMarketSnippet(mContext, mParkingLimit, mParkingStart))
+                        .snippet(Utilities.formatMarkerSnippet(mContext, mParkingLimit, mParkingStart))
                 ));
                 mViewModel.getParkingMarker().showInfoWindow();
                 invalidateOptionsMenu();

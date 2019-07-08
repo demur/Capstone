@@ -349,7 +349,7 @@ public class Utilities {
         return periodInBetween(context, calEnd, null);
     }
 
-    public static String formatMarketSnippet(Context context, Calendar calEnd, Calendar calStart) {
+    public static String formatMarkerSnippet(Context context, Calendar calEnd, Calendar calStart) {
         return (null != calStart ? context.getResources().getString(R.string.period_from, MainActivity.markerSDF.format(calStart.getTime())) + " " : "")
                 + context.getResources().getString(R.string.period_till, MainActivity.markerSDF.format(calEnd.getTime()));
     }
