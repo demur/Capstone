@@ -1,9 +1,9 @@
 package com.udacity.demur.capstone.model;
 
-import android.databinding.BindingAdapter;
+import androidx.databinding.BindingAdapter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.design.widget.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class DataBindingAdapters {
     //TODO clean this hack after update for com.android.support:design:28.0.0+
