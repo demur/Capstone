@@ -1,10 +1,11 @@
 package com.udacity.demur.capstone;
 
 import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import android.view.MenuItem;
 
 public class AboutActivity extends AppCompatActivity {
 

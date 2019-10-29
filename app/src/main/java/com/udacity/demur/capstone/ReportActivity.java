@@ -2,18 +2,19 @@ package com.udacity.demur.capstone;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
+import androidx.databinding.DataBindingUtil;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;

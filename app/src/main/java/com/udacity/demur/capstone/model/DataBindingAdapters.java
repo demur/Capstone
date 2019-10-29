@@ -1,8 +1,10 @@
 package com.udacity.demur.capstone.model;
 
-import androidx.databinding.BindingAdapter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+
+import androidx.databinding.BindingAdapter;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class DataBindingAdapters {
