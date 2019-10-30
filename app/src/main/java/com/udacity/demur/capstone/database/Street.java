@@ -1,26 +1,18 @@
 package com.udacity.demur.capstone.database;
 
-import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.Insert;
-import androidx.room.PrimaryKey;
-import androidx.room.Query;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
-import com.udacity.demur.capstone.MainActivity;
+import com.google.firebase.firestore.DocumentId;
 
 import java.util.Calendar;
 import java.util.List;
 
-@Entity(tableName = MainActivity.STREETS_TABLE_NAME)
 public class Street {
-    @PrimaryKey(autoGenerate = true)
-    private final int id;
+    @DocumentId
+    private final String id;
     private final int zone;
     private final String streetName;
     private final String limits;
@@ -33,21 +25,15 @@ public class Street {
     private final String parentSide;
     private final String sweeping;
 
-    @Ignore
     private Polyline poly;
-    @Ignore
     private Boolean visible = false;
-    @Ignore
     private LatLngBounds bnds;
-    @Ignore
     private List<LatLng> points;
-    @Ignore
     private int availableHours;
 
-    @Ignore
     private Calendar parkingLimit;
 
-    public Street(int id, int zone, String streetName, String limits, String side,
+    public Street(String id, int zone, String streetName, String limits, String side,
                   String coords, String bounds, int parentId, int section, int segment,
                   String parentSide, String sweeping) {
         this.id = id;
@@ -64,68 +50,17 @@ public class Street {
         this.sweeping = sweeping;
     }
 
+    public Street() {
+        this(null, -1, null, null, null, null, null, -1, -1, -1, null, null);
+    }
+
     @NonNull
-    @Override
     public String toString() {
         return (streetName + " (" + side + ") between " + limits.replace(",", " and ")
                 + " (section: " + section + ", segment:" + segment + ") in zone: " + zone);
     }
 
-    @Dao
-    public interface Store {
-        @Insert
-        void insert(Street street);
-
-        @Query("SELECT * FROM " + MainActivity.STREETS_TABLE_NAME + " ORDER BY id")
-        List<Street> all();
-
-        @Query("SELECT * FROM " + MainActivity.STREETS_TABLE_NAME + " ORDER BY id")
-        LiveData<List<Street>> allLive();
-
-        @Query("SELECT * FROM " + MainActivity.STREETS_TABLE_NAME + " WHERE id = :id")
-        Street getById(int id);
-
-        @Query("SELECT id FROM " + MainActivity.STREETS_TABLE_NAME + "")
-        List<Integer> getIds();
-
-        @Query("SELECT * FROM " + MainActivity.STREETS_TABLE_NAME + " WHERE zone = :zoneId")
-        List<Street> getByZone(int zoneId);
-
-        @Query("SELECT id FROM " + MainActivity.STREETS_TABLE_NAME + " WHERE zone = :zoneId")
-        List<Integer> getIdsByZone(int zoneId);
-
-        @Query("SELECT * FROM " + MainActivity.STREETS_TABLE_NAME + " WHERE parentId = :parentId")
-        List<Street> getByParent(int parentId);
-
-        @Query("SELECT id FROM " + MainActivity.STREETS_TABLE_NAME + " WHERE parentId = :parentId")
-        List<Integer> getIdsByParent(int parentId);
-
-        @Query("SELECT * FROM " + MainActivity.STREETS_TABLE_NAME + " WHERE streetName = :streetName")
-        List<Street> getByName(String streetName);
-
-        @Query("SELECT id FROM " + MainActivity.STREETS_TABLE_NAME + " WHERE streetName = :streetName")
-        List<Integer> getIdsByName(String streetName);
-
-        @Query("SELECT * FROM " + MainActivity.STREETS_TABLE_NAME + " WHERE streetName = :streetName AND zone = :zoneId")
-        List<Street> getByNameAndZone(String streetName, int zoneId);
-
-        @Query("SELECT id FROM " + MainActivity.STREETS_TABLE_NAME + " WHERE streetName = :streetName AND zone = :zoneId")
-        List<Integer> getIdsByNameAndZone(String streetName, int zoneId);
-
-        @Query("SELECT * FROM " + MainActivity.STREETS_TABLE_NAME + " WHERE zone IN(:zonesIds) AND sweeping GLOB :sweepingPattern")
-        List<Street> getByZoneAndSweeping(int[] zonesIds, String sweepingPattern);//LIKE
-
-        @Query("SELECT id FROM " + MainActivity.STREETS_TABLE_NAME + " WHERE zone IN(:zonesIds) AND sweeping GLOB :sweepingPattern")
-        List<Integer> getIdsByZoneAndSweeping(int[] zonesIds, String sweepingPattern);//LIKE
-
-        @Query("SELECT * FROM " + MainActivity.STREETS_TABLE_NAME + " WHERE zone IN(:zonesIds) AND SUBSTR(sweeping,:index,1)=:value")
-        List<Street> getByZoneAndSweeping(int[] zonesIds, int index, int value);
-
-        @Query("SELECT id FROM " + MainActivity.STREETS_TABLE_NAME + " WHERE zone IN(:zonesIds) AND SUBSTR(sweeping,:index,1)=:value")
-        List<Integer> getIdsByZoneAndSweeping(int[] zonesIds, int index, int value);
-    }
-
-    public int getId() {
+    public String getId() {
         return id;
     }
 

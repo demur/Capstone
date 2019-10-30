@@ -3,8 +3,6 @@ package com.udacity.demur.capstone;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,26 +10,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import androidx.databinding.DataBindingUtil;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.core.app.ShareCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -51,6 +33,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.appeaser.sublimepickerlibrary.datepicker.SelectedDate;
 import com.appeaser.sublimepickerlibrary.helpers.SublimeOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -66,6 +65,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.maps.android.geometry.Bounds;
 import com.google.maps.android.projection.SphericalMercatorProjection;
 import com.google.maps.android.ui.IconGenerator;
@@ -100,8 +101,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 8143;
     public static final String CAMERA = "com.udacity.demur.capstone.extra.CAMERA";
     public static final String FOCUS_ON_MARKER = "focusOnMarker";
-    public static final String ZONES_TABLE_NAME = "zones";
-    public static final String STREETS_TABLE_NAME = "streets";
 
     public static final String SHARED_PREFS_NAME = "Settings";
     public static final String SHARED_PREFS_CAM_LAT_KEY = "camLat";
@@ -124,8 +123,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private PolyDrafter mPolyDrafter;
     private MainActivityViewModel mViewModel;
     private SharedPreferences mSharedPrefs;
-    private SparseArray<Zone> mZones = new SparseArray<>();
-    private List<Street> mStreets = new ArrayList<>();
+    private SparseArray<Zone> mZones = null;
+    private List<Street> mStreets = null;
     public static final List<Date> mHolidays = Utilities.getHoliDates();
     private static final Object LOCK = new Object();
     public static final SphericalMercatorProjection PROJECTION = new SphericalMercatorProjection(1);
@@ -340,13 +339,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void run() {
                         final int lSize = mStreets.size();
+                        visibleStreets = new ArrayList<>();
                         detectedZones = new ArrayList<>();
                         for (int i = 0; i < lSize; i++) {
                             Street street = mStreets.get(i);
                             if (!detectedZones.contains(street.getZone())) {
                                 detectedZones.add(street.getZone());
                             }
-                            mZones.get(street.getZone()).streetListAdd(i);
+                            if (null != mZones.get(street.getZone())) {
+                                mZones.get(street.getZone()).streetListAdd(i);
+                            }
                             mStreets.get(i).setBnds(Utilities.str2llb(street.getBounds()));
                             mStreets.get(i).setPoints(Utilities.str2lllist(street.getCoords()));
                         }
@@ -391,7 +393,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         if (mapView.getViewTreeObserver().isAlive()) {
                                             mapView.getViewTreeObserver().addOnGlobalLayoutListener(
                                                     new ViewTreeObserver.OnGlobalLayoutListener() {
-                                                        @SuppressWarnings("deprecation")
                                                         @Override
                                                         public void onGlobalLayout() {
                                                             mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -1256,7 +1257,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (null != allZones && null != mMap) {
                 mZones = new SparseArray<>();
                 for (Zone zone : allZones) {
-                    int zoneId = zone.getId();
+                    int zoneId = Integer.parseInt(zone.getId());
                     mZones.append(zoneId, zone);
                     String[] zBndCoords = zone.getBounds().replaceAll("\\(|\\)", "").split(",");
                     if (zBndCoords.length == 4) {

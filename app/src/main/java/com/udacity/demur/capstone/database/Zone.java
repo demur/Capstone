@@ -1,36 +1,26 @@
 package com.udacity.demur.capstone.database;
 
-import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.Insert;
-import androidx.room.PrimaryKey;
-import androidx.room.Query;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.udacity.demur.capstone.MainActivity;
+import com.google.firebase.firestore.DocumentId;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(tableName = MainActivity.ZONES_TABLE_NAME)
 public class Zone {
-    @PrimaryKey(autoGenerate = true)
-    final int id;
+    @DocumentId
+    private final String id;
     private final String name;
     private final String desc;
     private final String bounds;
     private final String activeHours;
     private final int alienLimit;
 
-    @Ignore
     private LatLngBounds bnds;
-    @Ignore
     private List<Integer> streetList = new ArrayList<>();
 
-    public Zone(int id, String name, String desc, String bounds, String activeHours, int alienLimit) {
+    public Zone(String id, String name, String desc, String bounds, String activeHours, int alienLimit) {
         this.id = id;
         this.name = name;
         this.desc = desc;
@@ -39,43 +29,16 @@ public class Zone {
         this.alienLimit = alienLimit;
     }
 
+    public Zone() {
+        this(null, null, null, null, null, -1);
+    }
+
     @NonNull
-    @Override
     public String toString() {
         return (name + ". " + desc);
     }
 
-    @Dao
-    public interface Store {
-        @Insert
-        void insert(Zone zone);
-
-        @Query("SELECT * FROM " + MainActivity.ZONES_TABLE_NAME + " ORDER BY id")
-        List<Zone> all();
-
-        @Query("SELECT * FROM " + MainActivity.ZONES_TABLE_NAME + " ORDER BY id")
-        LiveData<List<Zone>> allLive();
-
-        @Query("SELECT * FROM " + MainActivity.ZONES_TABLE_NAME + " WHERE id = :id")
-        Zone getById(int id);
-
-        @Query("SELECT id FROM " + MainActivity.ZONES_TABLE_NAME + "")
-        List<Integer> getIds();
-
-        @Query("SELECT * FROM " + MainActivity.ZONES_TABLE_NAME + " WHERE activeHours GLOB :pattern")
-        List<Zone> getByPattern(String pattern);//LIKE
-
-        @Query("SELECT id FROM " + MainActivity.ZONES_TABLE_NAME + " WHERE activeHours GLOB :pattern")
-        List<Integer> getIdsByPattern(String pattern);//LIKE
-
-        @Query("SELECT * FROM " + MainActivity.ZONES_TABLE_NAME + " WHERE SUBSTR(activeHours,:index,1)=:value")
-        List<Zone> getByPattern(int index, int value);
-
-        @Query("SELECT id FROM " + MainActivity.ZONES_TABLE_NAME + " WHERE SUBSTR(activeHours,:index,1)=:value")
-        List<Integer> getIdsByPattern(int index, int value);
-    }
-
-    public int getId() {
+    public String getId() {
         return id;
     }
 
