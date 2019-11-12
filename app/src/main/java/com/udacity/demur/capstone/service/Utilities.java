@@ -53,6 +53,7 @@ public class Utilities {
         SimpleDateFormat holiSDF = new SimpleDateFormat("dd/MM/yyyy");
         // TODO make this list only default fallback in case there is no info on holidays in Firebase
         List<String> holidays = new ArrayList<>( // https://library.municode.com/nj/jersey_city/codes/code_of_ordinances?nodeId=CH332VETR_ARTIGEPR_S332-1DE
+                // Date specific holidays falling on Saturday are observed on Friday; date specific holidays falling on Sunday are observed on Monday.
                 Arrays.asList(
                         "10/08/2018", // Columbus Day, the second Monday in October.
                         "11/06/2018", // General Election Day, the Tuesday after the first Monday in November.
@@ -74,7 +75,21 @@ public class Utilities {
                         "11/11/2019", // Veterans' Day, November 11.
                         "11/28/2019", // Thanksgiving Day, the fourth Thursday in November.
                         "11/29/2019", // The Friday immediately after Thanksgiving.
-                        "12/25/2019"  // Christmas Day, December 25.
+                        "12/25/2019", // Christmas Day, December 25.
+                        "01/01/2020", // New Year's Day, January 1.
+                        "01/20/2020", // Martin Luther King's Birthday, the third Monday in January.
+                        "02/12/2020", // Abraham Lincoln's Birthday, February 12.
+                        "02/17/2020", // George Washington's Birthday, the third Monday in February.
+                        "04/10/2020", // Good Friday, falling between March 21 and April 23.
+                        "05/25/2020", // Memorial Day, the last Monday in May.
+                        "07/03/2020", // Independence Day, July 4.
+                        "09/07/2020", // Labor Day, the first Monday in September.
+                        "10/12/2020", // Columbus Day, the second Monday in October.
+                        "11/03/2020", // General Election Day, the Tuesday after the first Monday in November.
+                        "11/11/2020", // Veterans' Day, November 11.
+                        "11/26/2020", // Thanksgiving Day, the fourth Thursday in November.
+                        "11/27/2020", // The Friday immediately after Thanksgiving.
+                        "12/25/2020"  // Christmas Day, December 25.
                 ));
         for (String dateStr : holidays) {
             try {
