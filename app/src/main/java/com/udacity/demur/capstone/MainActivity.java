@@ -65,6 +65,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.maps.android.geometry.Bounds;
@@ -1077,10 +1078,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         @SuppressLint("ApplySharedPref")
         @Override
         public void onClick(View view) {
-            mMainBinding.fab.hide();
             if (null == mViewModel.getParkingMarker()) {
-                showSnackbar();
+                mMainBinding.fab.hide(fabVisibilityListener);
             } else {
+                mMainBinding.fab.hide();
                 invalidateOptionsMenu();
                 mViewModel.getParkingMarker().setVisible(false);
                 mViewModel.getParkingMarker().remove();
@@ -1177,6 +1178,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         isMarkerSetupMode = true;
         onCameraIdle();
     }
+
+    final FloatingActionButton.OnVisibilityChangedListener fabVisibilityListener =
+            new FloatingActionButton.OnVisibilityChangedListener() {
+                @Override
+                public void onHidden(FloatingActionButton fab) {
+                    super.onHidden(fab);
+                    showSnackbar();
+                }
+            };
 
     private void modeSwitchCleanUp() {
         if (mZonesOverCity && isMarkerSetupMode) {
