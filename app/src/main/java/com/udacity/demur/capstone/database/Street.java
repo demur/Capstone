@@ -11,18 +11,12 @@ import java.util.Calendar;
 import java.util.List;
 
 public class Street {
-    @DocumentId
-    private final String id;
-    private final int zone;
     private final String streetName;
+    private final int zone;
+    private final String bounds;
+    private final String coords;
     private final String limits;
     private final String side;
-    private final String coords;
-    private final String bounds;
-    private final int parentId;
-    private final int section;
-    private final int segment;
-    private final String parentSide;
     private final String sweeping;
 
     private Polyline poly;
@@ -33,43 +27,41 @@ public class Street {
 
     private Calendar parkingLimit;
 
-    public Street(String id, int zone, String streetName, String limits, String side,
-                  String coords, String bounds, int parentId, int section, int segment,
-                  String parentSide, String sweeping) {
-        this.id = id;
-        this.zone = zone;
+    public Street(String streetName, int zone, String bounds, String coords, String limits,
+                  String side, String sweeping) {
         this.streetName = streetName;
+        this.zone = zone;
+        this.bounds = bounds;
+        this.coords = coords;
         this.limits = limits;
         this.side = side;
-        this.coords = coords;
-        this.bounds = bounds;
-        this.parentId = parentId;
-        this.section = section;
-        this.segment = segment;
-        this.parentSide = parentSide;
         this.sweeping = sweeping;
     }
 
     public Street() {
-        this(null, -1, null, null, null, null, null, -1, -1, -1, null, null);
+        this(null, -1, null, null, null, null, null);
     }
 
     @NonNull
     public String toString() {
         return (streetName + " (" + side + ") between " + limits.replace(",", " and ")
-                + " (section: " + section + ", segment:" + segment + ") in zone: " + zone);
+                + " in zone: " + zone);
     }
 
-    public String getId() {
-        return id;
+    public String getStreetName() {
+        return streetName;
     }
 
     public int getZone() {
         return zone;
     }
 
-    public String getStreetName() {
-        return streetName;
+    public String getBounds() {
+        return bounds;
+    }
+
+    public String getCoords() {
+        return coords;
     }
 
     public String getLimits() {
@@ -78,30 +70,6 @@ public class Street {
 
     public String getSide() {
         return side;
-    }
-
-    public String getCoords() {
-        return coords;
-    }
-
-    public String getBounds() {
-        return bounds;
-    }
-
-    public int getParentId() {
-        return parentId;
-    }
-
-    public int getSection() {
-        return section;
-    }
-
-    public int getSegment() {
-        return segment;
-    }
-
-    public String getParentSide() {
-        return parentSide;
     }
 
     public String getSweeping() {

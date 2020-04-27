@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.udacity.demur.capstone.database.FirestoreQueryLiveData;
 import com.udacity.demur.capstone.database.Street;
+import com.udacity.demur.capstone.database.StreetSeq;
 import com.udacity.demur.capstone.database.Zone;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class MainActivityViewModel extends AndroidViewModel implements Observabl
     private final FirebaseFirestore mDb = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
-    private final LiveData<List<Street>> allStreets;
+    private final LiveData<List<StreetSeq>> allStreets;
     private final LiveData<List<Zone>> allZones;
     private List<Street> streets = new ArrayList<>();
     private SparseArray<Zone> zones = new SparseArray<>();
@@ -74,10 +75,10 @@ public class MainActivityViewModel extends AndroidViewModel implements Observabl
         mDb.setFirestoreSettings(settings);
 
         allZones = new FirestoreQueryLiveData<>(mDb.collection("zones"), Zone.class);
-        allStreets = new FirestoreQueryLiveData<>(mDb.collection("street-segments"), Street.class);
+        allStreets = new FirestoreQueryLiveData<>(mDb.collection("streets"), StreetSeq.class);
     }
 
-    public LiveData<List<Street>> getAllStreets() {
+    public LiveData<List<StreetSeq>> getAllStreets() {
         return allStreets;
     }
 

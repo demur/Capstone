@@ -72,7 +72,9 @@ import com.google.maps.android.geometry.Bounds;
 import com.google.maps.android.projection.SphericalMercatorProjection;
 import com.google.maps.android.ui.IconGenerator;
 import com.michaelmuenzer.android.scrollablennumberpicker.ScrollableNumberPickerListener;
+import com.udacity.demur.capstone.database.Segment;
 import com.udacity.demur.capstone.database.Street;
+import com.udacity.demur.capstone.database.StreetSeq;
 import com.udacity.demur.capstone.database.Zone;
 import com.udacity.demur.capstone.databinding.ActivityMainBinding;
 import com.udacity.demur.capstone.databinding.NavDateTimeSwitchBinding;
@@ -1251,11 +1253,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mZoneLabels = mViewModel.getZoneLabels();
     }
 
-    final Observer<List<Street>> allStreetsObserver = new Observer<List<Street>>() {
+    final Observer<List<StreetSeq>> allStreetsObserver = new Observer<List<StreetSeq>>() {
         @Override
-        public void onChanged(@Nullable final List<Street> allStreets) {
+        public void onChanged(@Nullable final List<StreetSeq> allStreets) {
             if (null != allStreets && null != mMap) {
-                mStreets = allStreets;
+                mStreets = new ArrayList<>();
+                for (StreetSeq streetSeq : allStreets) {
+                    if (null != streetSeq.getSegments()) {
+                        for (Segment segment : streetSeq.getSegments()) {
+                            mStreets.add(new Street(streetSeq.getStreetName(), segment.getZone(),
+                                    segment.getBounds(), segment.getCoords(), segment.getLimits(),
+                                    segment.getSide(), segment.getSweepingId()));
+                        }
+                    }
+                }
                 handleDataPrepOnObserverExec();
             }
         }
