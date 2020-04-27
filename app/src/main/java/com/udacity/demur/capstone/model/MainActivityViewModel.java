@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.Bindable;
 import androidx.databinding.Observable;
 import androidx.databinding.PropertyChangeRegistry;
+import androidx.databinding.library.baseAdapters.BR;//https://stackoverflow.com/a/58028581
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
@@ -18,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.udacity.demur.capstone.BR;
 import com.udacity.demur.capstone.database.FirestoreQueryLiveData;
 import com.udacity.demur.capstone.database.Street;
 import com.udacity.demur.capstone.database.Zone;
@@ -218,10 +218,10 @@ public class MainActivityViewModel extends AndroidViewModel implements Observabl
     }
 
     void notifyChange() {
-        callbacks.notifyCallbacks(this, 0, null);
+        callbacks.notifyChange(this, 0);
     }
 
     void notifyPropertyChanged(int fieldId) {
-        callbacks.notifyCallbacks(this, fieldId, null);
+        callbacks.notifyChange(this, fieldId);
     }
 }
