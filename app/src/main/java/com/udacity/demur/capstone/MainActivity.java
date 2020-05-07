@@ -68,6 +68,7 @@ import com.google.android.gms.maps.model.RoundCap;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.common.base.Strings;
 import com.google.maps.android.geometry.Bounds;
 import com.google.maps.android.projection.SphericalMercatorProjection;
 import com.google.maps.android.ui.IconGenerator;
@@ -75,6 +76,7 @@ import com.michaelmuenzer.android.scrollablennumberpicker.ScrollableNumberPicker
 import com.udacity.demur.capstone.database.Segment;
 import com.udacity.demur.capstone.database.Street;
 import com.udacity.demur.capstone.database.StreetSeq;
+import com.udacity.demur.capstone.database.SweepingPatterns;
 import com.udacity.demur.capstone.database.Zone;
 import com.udacity.demur.capstone.databinding.ActivityMainBinding;
 import com.udacity.demur.capstone.databinding.NavDateTimeSwitchBinding;
@@ -128,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SharedPreferences mSharedPrefs;
     private SparseArray<Zone> mZones = null;
     private List<Street> mStreets = null;
+    private HashMap<String, String> mSweepingPatternsHash = null;
     public static final List<Date> mHolidays = Utilities.getHoliDates();
     private static final Object LOCK = new Object();
     public static final SphericalMercatorProjection PROJECTION = new SphericalMercatorProjection(1);
@@ -172,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         mViewModel.getAllStreets().observe(MainActivity.this, allStreetsObserver);
         mViewModel.getAllZones().observe(MainActivity.this, allZonesObserver);
+        mViewModel.getSweepingPatterns().observe(MainActivity.this, sweepingPatternsObserver);
         mMainBinding.setViewModel(mViewModel);
 
         mMainBinding.drawerLayout.addDrawerListener(drawerListener);
@@ -335,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void prepareData() {
-        if (!isDataPrepared && null != mStreets && null != mZones) {
+        if (!isDataPrepared && null != mStreets && null != mZones && null != mSweepingPatternsHash) {
             mMap.clear();
             synchronized (LOCK) {
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
@@ -354,7 +358,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             }
                             mStreets.get(i).setBnds(Utilities.str2llb(street.getBounds()));
                             mStreets.get(i).setPoints(Utilities.str2lllist(street.getCoords()));
+                            if (!mSweepingPatternsHash.containsKey(mStreets.get(i).getSweeping())) {
+                                mSweepingPatternsHash.put(mStreets.get(i).getSweeping(), Strings.repeat("0", 168));
+                            }
                         }
+                        mViewModel.setSweepingPatternsHash(mSweepingPatternsHash);
                         if (detectedZones.size() > 0) {
                             int zoneQuantity = detectedZones.size();
                             LatLngBounds.Builder cameraBoundsBuilder = LatLngBounds.builder();
@@ -1241,6 +1249,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mStreets = mViewModel.getStreets();
         mZones = mViewModel.getZones();
+        mSweepingPatternsHash = mViewModel.getSweepingPatternsHash();
         detectedZones = mViewModel.getDetectedZones();
         mParkingDuration = mViewModel.getParkingDuration();
         isActualTimeUsed = mViewModel.getActualTimeUsed();
@@ -1290,6 +1299,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         ));
                     }
                 }
+                handleDataPrepOnObserverExec();
+            }
+        }
+    };
+
+    final Observer<SweepingPatterns> sweepingPatternsObserver = new Observer<SweepingPatterns>() {
+        @Override
+        public void onChanged(@Nullable final SweepingPatterns sweepingPatterns) {
+            if (null != sweepingPatterns) {
+                mSweepingPatternsHash = sweepingPatterns.getMap();
                 handleDataPrepOnObserverExec();
             }
         }

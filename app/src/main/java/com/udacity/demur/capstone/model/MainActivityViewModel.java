@@ -19,13 +19,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.udacity.demur.capstone.database.FirestoreDocumentLiveData;
 import com.udacity.demur.capstone.database.FirestoreQueryLiveData;
 import com.udacity.demur.capstone.database.Street;
 import com.udacity.demur.capstone.database.StreetSeq;
+import com.udacity.demur.capstone.database.SweepingPatterns;
 import com.udacity.demur.capstone.database.Zone;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivityViewModel extends AndroidViewModel implements Observable {
@@ -38,8 +41,10 @@ public class MainActivityViewModel extends AndroidViewModel implements Observabl
     private FirebaseUser mUser;
     private final LiveData<List<StreetSeq>> allStreets;
     private final LiveData<List<Zone>> allZones;
+    private final LiveData<SweepingPatterns> sweepingPatterns;
     private List<Street> streets = new ArrayList<>();
     private SparseArray<Zone> zones = new SparseArray<>();
+    private HashMap<String, String> sweepingPatternsHash = new HashMap<>();
     private List<Integer> detectedZones = new ArrayList<>();
     private List<Marker> zoneLabels = new ArrayList<>();
     private Marker parkingMarker;
@@ -75,6 +80,8 @@ public class MainActivityViewModel extends AndroidViewModel implements Observabl
         mDb.setFirestoreSettings(settings);
 
         allZones = new FirestoreQueryLiveData<>(mDb.collection("zones"), Zone.class);
+        sweepingPatterns = new FirestoreDocumentLiveData<>(mDb.collection("patterns")
+                .document("sweeping"), SweepingPatterns.class);
         allStreets = new FirestoreQueryLiveData<>(mDb.collection("streets"), StreetSeq.class);
     }
 
@@ -84,6 +91,10 @@ public class MainActivityViewModel extends AndroidViewModel implements Observabl
 
     public LiveData<List<Zone>> getAllZones() {
         return allZones;
+    }
+
+    public LiveData<SweepingPatterns> getSweepingPatterns() {
+        return sweepingPatterns;
     }
 
     public List<Street> getStreets() {
@@ -100,6 +111,14 @@ public class MainActivityViewModel extends AndroidViewModel implements Observabl
 
     public void setZones(SparseArray<Zone> zones) {
         this.zones = zones;
+    }
+
+    public HashMap<String, String> getSweepingPatternsHash() {
+        return sweepingPatternsHash;
+    }
+
+    public void setSweepingPatternsHash(HashMap<String, String> sweepingPatternsHash) {
+        this.sweepingPatternsHash = sweepingPatternsHash;
     }
 
     public List<Integer> getDetectedZones() {
