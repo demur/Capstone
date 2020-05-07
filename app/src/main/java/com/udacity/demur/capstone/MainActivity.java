@@ -586,268 +586,270 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         @Override
         protected Void doInBackground(String... params) {
-            final int streetSize = mStreets.size();
-            if (mZonesOverCity) {
-                int[] zoneColors = getResources().getIntArray(R.array.zones);
-                for (int p = 0; p < streetSize; p++) {
-                    final int pIndex = p;
-                    final int color = zoneColors[mStreets.get(p).getZone()];
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (null == mStreets.get(pIndex).getPoly()) {
-                                mStreets.get(pIndex).setPoly(
-                                        mMap.addPolyline(
-                                                new PolylineOptions()
-                                                        .geodesic(true)
-                                                        .jointType(2)
-                                                        .startCap(new RoundCap())
-                                                        .endCap(new RoundCap())
-                                                        .color(color)
-                                                        .zIndex(100)
-                                                        .addAll(mStreets.get(pIndex).getPoints())
-                                                        .visible(true)
-                                        )
-                                );
-                            } else {
-                                mStreets.get(pIndex).getPoly().setColor(color);
-                                mStreets.get(pIndex).getPoly().setVisible(true);
+            if (null != mStreets) {
+                final int streetSize = mStreets.size();
+                if (mZonesOverCity) {
+                    int[] zoneColors = getResources().getIntArray(R.array.zones);
+                    for (int p = 0; p < streetSize; p++) {
+                        final int pIndex = p;
+                        final int color = zoneColors[mStreets.get(p).getZone()];
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (null == mStreets.get(pIndex).getPoly()) {
+                                    mStreets.get(pIndex).setPoly(
+                                            mMap.addPolyline(
+                                                    new PolylineOptions()
+                                                            .geodesic(true)
+                                                            .jointType(2)
+                                                            .startCap(new RoundCap())
+                                                            .endCap(new RoundCap())
+                                                            .color(color)
+                                                            .zIndex(100)
+                                                            .addAll(mStreets.get(pIndex).getPoints())
+                                                            .visible(true)
+                                            )
+                                    );
+                                } else {
+                                    mStreets.get(pIndex).getPoly().setColor(color);
+                                    mStreets.get(pIndex).getPoly().setVisible(true);
+                                }
                             }
-                        }
-                    });
-                    publishProgress((int) ((p / (float) streetSize) * 100));
-                }
-                return null;
-            }
-
-            final int zoneSize = mZones.size();
-            List<Integer> visibleZones = new ArrayList<>();
-
-            final int colorAllowed = ContextCompat.getColor(mContext, R.color.parking_allowed);
-            final int colorLimited = ContextCompat.getColor(mContext, R.color.parking_limited);
-            final int colorProhibited = ContextCompat.getColor(mContext, R.color.parking_prohibited);
-
-            int permitOfZone = mPermitZone;
-            Calendar calend = new GregorianCalendar();
-
-            Date targetDate = !isActualTimeUsed && null != mCustomDate ? mCustomDate : new Date();
-            calend.setTime(targetDate);
-            if (isMarkerSetupMode && !isActualTimeUsed && null != mCustomDate) {
-                mParkingStart = (Calendar) calend.clone();
-            }
-
-            int minuteOfHour = calend.get(Calendar.MINUTE);
-            double hourFraction = minuteOfHour / 60.0;
-            HashMap<String, Integer> sweepingHash = new HashMap<>();
-            HashMap<String, Integer> zoneHoursHash = new HashMap<>();
-            int availHours = 0;
-            double availFloat = 0;
-
-            for (int i = 0; i < zoneSize; i++) {
-                int key = mZones.keyAt(i);
-                if (mCameraBounds.intersects(Utilities.llb2b(mZones.get(key).getBnds()))) {
-                    visibleZones.add(key);
-                }
-            }
-            for (int j = 0; j < streetSize; j++) {
-                final int jIndex = j;
-                if (visibleZones.contains(mStreets.get(j).getZone())) {
-                    if (null == mStreets.get(j).getBnds()) {
-                        mStreets.get(j).setBnds(Utilities.str2llb(mStreets.get(j).getBounds()));
+                        });
+                        publishProgress((int) ((p / (float) streetSize) * 100));
                     }
-                    if (null != mStreets.get(j).getBnds() && mCameraBounds.intersects(Utilities.llb2b(mStreets.get(j).getBnds()))) {
-                        Calendar parkingLimit = null;
-                        String sweepingPattern = mStreets.get(j).getSweeping();
-                        if (sweepingHash.containsKey(sweepingPattern)) {
-                            availHours = sweepingHash.get(sweepingPattern);
-                        } else {
-                            availHours = Utilities.getAvailHours(sweepingPattern, (Calendar) calend.clone());
-                            sweepingHash.put(sweepingPattern, availHours);
-                        }
-                        if (permitOfZone != mStreets.get(j).getZone()) {
-                            String activeHoursPattern = mZones.get(mStreets.get(j).getZone()).getActiveHours();
-                            int unrstdHours = 0;
-                            if (zoneHoursHash.containsKey(activeHoursPattern)) {
-                                unrstdHours = zoneHoursHash.get(activeHoursPattern);
-                            } else {
-                                unrstdHours = Utilities.getAvailHours(activeHoursPattern, (Calendar) calend.clone());
-                                zoneHoursHash.put(activeHoursPattern, unrstdHours);
-                            }
-                            int alienLimit = mZones.get(mStreets.get(j).getZone()).getAlienLimit();
-                            if (availHours >= 0 && unrstdHours >= 0) {
-                                if (unrstdHours == 0 && alienLimit > 0 &&
-                                        (alienLimit < availHours || (alienLimit == availHours && minuteOfHour == 0))) {
-                                    parkingLimit = (null == mParkingStart ? new GregorianCalendar() : (Calendar) mParkingStart.clone());
-                                    parkingLimit.add(Calendar.HOUR, alienLimit);
-                                }
-                                availHours = Math.min(availHours, unrstdHours + alienLimit);
-                            } else if (availHours < 0 && unrstdHours >= 0) {
-                                if (Math.abs(availHours) >= unrstdHours) {
-                                    Calendar tmpCalend = (Calendar) calend.clone();
-                                    tmpCalend.add(Calendar.HOUR, Math.abs(availHours));
-                                    int rstdHours = Utilities.getAvailHours(activeHoursPattern, tmpCalend);
-                                    if (rstdHours < 0 && alienLimit == 0) {
-                                        availHours -= rstdHours;
-                                    }
-                                }
-                            } else if (availHours >= 0 && unrstdHours < 0) {
-                                if (availHours > 0 && alienLimit > 0) {
-                                    if (Math.abs(unrstdHours) > alienLimit) {
-                                        if (alienLimit < availHours) {
-                                            parkingLimit = (null == mParkingStart ? new GregorianCalendar() : (Calendar) mParkingStart.clone());
-                                            parkingLimit.add(Calendar.HOUR, alienLimit);
-                                        }
-                                        availHours = Math.min(availHours, alienLimit);
-                                    }
-                                } else if (alienLimit == 0) {
-                                    if (availHours > Math.abs(unrstdHours)) {
-                                        availHours = unrstdHours;
-                                    } else {
-                                        Calendar tmpCalend = (Calendar) calend.clone();
-                                        tmpCalend.add(Calendar.HOUR, Math.abs(unrstdHours));
-                                        int nextAvailHours = Utilities.getAvailHours(sweepingPattern, tmpCalend);
-                                        int rstdHours = Utilities.getAvailHours(activeHoursPattern, tmpCalend);
-                                        // For more common approach this block needs recursive function
-                                        if (nextAvailHours >= 0 && rstdHours >= 0) {
-                                            availHours = unrstdHours;
-                                        } else if (nextAvailHours < 0 && rstdHours >= 0) {
-                                            availHours = unrstdHours + nextAvailHours;
-                                        } else if (nextAvailHours >= 0 && rstdHours < 0) {
-                                            availHours = unrstdHours + rstdHours;
-                                        } else if (nextAvailHours < 0 && rstdHours < 0) {
-                                            availHours = unrstdHours + Math.min(nextAvailHours, rstdHours);
-                                        }
-                                    }
-                                }
-                            } else if (availHours < 0 && unrstdHours < 0) {
-                                // Same recursive function needed here for common approach to be adopted
-                                if (Math.abs(unrstdHours) > availHours) {
-                                    if (alienLimit == 0) {
-                                        availHours = unrstdHours;
-                                    }
-                                }
-                            }
-                        }
+                    return null;
+                }
 
-                        final int color;
-                        if (availHours < 0) {
-                            availFloat = (double) availHours + (null == parkingLimit ? hourFraction : 0);
-                            color = colorProhibited;
-                        } else {
-                            availFloat = (double) availHours - (null == parkingLimit ? hourFraction : 0);
-                            if (availFloat < 0.25) {
-                                color = colorProhibited;
-                            } else if (availFloat < mParkingDuration) {
-                                color = colorLimited;
-                            } else {
-                                color = colorAllowed;
-                            }
+                final int zoneSize = mZones.size();
+                List<Integer> visibleZones = new ArrayList<>();
+
+                final int colorAllowed = ContextCompat.getColor(mContext, R.color.parking_allowed);
+                final int colorLimited = ContextCompat.getColor(mContext, R.color.parking_limited);
+                final int colorProhibited = ContextCompat.getColor(mContext, R.color.parking_prohibited);
+
+                int permitOfZone = mPermitZone;
+                Calendar calend = new GregorianCalendar();
+
+                Date targetDate = !isActualTimeUsed && null != mCustomDate ? mCustomDate : new Date();
+                calend.setTime(targetDate);
+                if (isMarkerSetupMode && !isActualTimeUsed && null != mCustomDate) {
+                    mParkingStart = (Calendar) calend.clone();
+                }
+
+                int minuteOfHour = calend.get(Calendar.MINUTE);
+                double hourFraction = minuteOfHour / 60.0;
+                HashMap<String, Integer> sweepingHash = new HashMap<>();
+                HashMap<String, Integer> zoneHoursHash = new HashMap<>();
+                int availHours = 0;
+                double availFloat = 0;
+
+                for (int i = 0; i < zoneSize; i++) {
+                    int key = mZones.keyAt(i);
+                    if (mCameraBounds.intersects(Utilities.llb2b(mZones.get(key).getBnds()))) {
+                        visibleZones.add(key);
+                    }
+                }
+                for (int j = 0; j < streetSize; j++) {
+                    final int jIndex = j;
+                    if (visibleZones.contains(mStreets.get(j).getZone())) {
+                        if (null == mStreets.get(j).getBnds()) {
+                            mStreets.get(j).setBnds(Utilities.str2llb(mStreets.get(j).getBounds()));
                         }
-                        if (!visibleStreets.contains(j)) {
-                            if (null == mStreets.get(j).getPoly()) {
-                                if (null == mStreets.get(j).getPoints()) {
-                                    mStreets.get(j).setPoints(Utilities.str2lllist(mStreets.get(j).getCoords()));
+                        if (null != mStreets.get(j).getBnds() && mCameraBounds.intersects(Utilities.llb2b(mStreets.get(j).getBnds()))) {
+                            Calendar parkingLimit = null;
+                            String sweepingPattern = mSweepingPatternsHash.get(mStreets.get(j).getSweeping());
+                            if (sweepingHash.containsKey(sweepingPattern)) {
+                                availHours = sweepingHash.get(sweepingPattern);
+                            } else {
+                                availHours = Utilities.getAvailHours(sweepingPattern, (Calendar) calend.clone());
+                                sweepingHash.put(sweepingPattern, availHours);
+                            }
+                            if (permitOfZone != mStreets.get(j).getZone()) {
+                                String activeHoursPattern = mZones.get(mStreets.get(j).getZone()).getActiveHours();
+                                int unrstdHours = 0;
+                                if (zoneHoursHash.containsKey(activeHoursPattern)) {
+                                    unrstdHours = zoneHoursHash.get(activeHoursPattern);
+                                } else {
+                                    unrstdHours = Utilities.getAvailHours(activeHoursPattern, (Calendar) calend.clone());
+                                    zoneHoursHash.put(activeHoursPattern, unrstdHours);
                                 }
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mStreets.get(jIndex).setPoly(
-                                                mMap.addPolyline(
-                                                        new PolylineOptions()
-                                                                .geodesic(true)
-                                                                .jointType(2)
-                                                                .startCap(new RoundCap())
-                                                                .endCap(new RoundCap())
-                                                                .color(color)
-                                                                .zIndex(100)
-                                                                .addAll(mStreets.get(jIndex).getPoints())
-                                                                .visible(true)
-                                                )
-                                        );
+                                int alienLimit = mZones.get(mStreets.get(j).getZone()).getAlienLimit();
+                                if (availHours >= 0 && unrstdHours >= 0) {
+                                    if (unrstdHours == 0 && alienLimit > 0 &&
+                                            (alienLimit < availHours || (alienLimit == availHours && minuteOfHour == 0))) {
+                                        parkingLimit = (null == mParkingStart ? new GregorianCalendar() : (Calendar) mParkingStart.clone());
+                                        parkingLimit.add(Calendar.HOUR, alienLimit);
                                     }
-                                });
-                                mStreets.get(j).setVisible(true);
-                                visibleStreets.add(j);
+                                    availHours = Math.min(availHours, unrstdHours + alienLimit);
+                                } else if (availHours < 0 && unrstdHours >= 0) {
+                                    if (Math.abs(availHours) >= unrstdHours) {
+                                        Calendar tmpCalend = (Calendar) calend.clone();
+                                        tmpCalend.add(Calendar.HOUR, Math.abs(availHours));
+                                        int rstdHours = Utilities.getAvailHours(activeHoursPattern, tmpCalend);
+                                        if (rstdHours < 0 && alienLimit == 0) {
+                                            availHours -= rstdHours;
+                                        }
+                                    }
+                                } else if (availHours >= 0 && unrstdHours < 0) {
+                                    if (availHours > 0 && alienLimit > 0) {
+                                        if (Math.abs(unrstdHours) > alienLimit) {
+                                            if (alienLimit < availHours) {
+                                                parkingLimit = (null == mParkingStart ? new GregorianCalendar() : (Calendar) mParkingStart.clone());
+                                                parkingLimit.add(Calendar.HOUR, alienLimit);
+                                            }
+                                            availHours = Math.min(availHours, alienLimit);
+                                        }
+                                    } else if (alienLimit == 0) {
+                                        if (availHours > Math.abs(unrstdHours)) {
+                                            availHours = unrstdHours;
+                                        } else {
+                                            Calendar tmpCalend = (Calendar) calend.clone();
+                                            tmpCalend.add(Calendar.HOUR, Math.abs(unrstdHours));
+                                            int nextAvailHours = Utilities.getAvailHours(sweepingPattern, tmpCalend);
+                                            int rstdHours = Utilities.getAvailHours(activeHoursPattern, tmpCalend);
+                                            // For more common approach this block needs recursive function
+                                            if (nextAvailHours >= 0 && rstdHours >= 0) {
+                                                availHours = unrstdHours;
+                                            } else if (nextAvailHours < 0 && rstdHours >= 0) {
+                                                availHours = unrstdHours + nextAvailHours;
+                                            } else if (nextAvailHours >= 0 && rstdHours < 0) {
+                                                availHours = unrstdHours + rstdHours;
+                                            } else if (nextAvailHours < 0 && rstdHours < 0) {
+                                                availHours = unrstdHours + Math.min(nextAvailHours, rstdHours);
+                                            }
+                                        }
+                                    }
+                                } else if (availHours < 0 && unrstdHours < 0) {
+                                    // Same recursive function needed here for common approach to be adopted
+                                    if (Math.abs(unrstdHours) > availHours) {
+                                        if (alienLimit == 0) {
+                                            availHours = unrstdHours;
+                                        }
+                                    }
+                                }
+                            }
+
+                            final int color;
+                            if (availHours < 0) {
+                                availFloat = (double) availHours + (null == parkingLimit ? hourFraction : 0);
+                                color = colorProhibited;
+                            } else {
+                                availFloat = (double) availHours - (null == parkingLimit ? hourFraction : 0);
+                                if (availFloat < 0.25) {
+                                    color = colorProhibited;
+                                } else if (availFloat < mParkingDuration) {
+                                    color = colorLimited;
+                                } else {
+                                    color = colorAllowed;
+                                }
+                            }
+                            if (!visibleStreets.contains(j)) {
+                                if (null == mStreets.get(j).getPoly()) {
+                                    if (null == mStreets.get(j).getPoints()) {
+                                        mStreets.get(j).setPoints(Utilities.str2lllist(mStreets.get(j).getCoords()));
+                                    }
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mStreets.get(jIndex).setPoly(
+                                                    mMap.addPolyline(
+                                                            new PolylineOptions()
+                                                                    .geodesic(true)
+                                                                    .jointType(2)
+                                                                    .startCap(new RoundCap())
+                                                                    .endCap(new RoundCap())
+                                                                    .color(color)
+                                                                    .zIndex(100)
+                                                                    .addAll(mStreets.get(jIndex).getPoints())
+                                                                    .visible(true)
+                                                    )
+                                            );
+                                        }
+                                    });
+                                    mStreets.get(j).setVisible(true);
+                                    visibleStreets.add(j);
+                                } else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mStreets.get(jIndex).getPoly().setColor(color);
+                                            mStreets.get(jIndex).getPoly().setVisible(true);
+                                        }
+                                    });
+                                }
+                                if (!mStreets.get(j).isVisible()) {
+                                    mStreets.get(j).setVisible(true);
+                                    visibleStreets.add(j);
+                                }
                             } else {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         mStreets.get(jIndex).getPoly().setColor(color);
-                                        mStreets.get(jIndex).getPoly().setVisible(true);
                                     }
                                 });
                             }
-                            if (!mStreets.get(j).isVisible()) {
-                                mStreets.get(j).setVisible(true);
-                                visibleStreets.add(j);
+                            if (null == parkingLimit) {
+                                parkingLimit = (null == mParkingStart ? new GregorianCalendar() : (Calendar) mParkingStart.clone());
+                                parkingLimit.add(Calendar.HOUR, Math.abs(availHours));
+                                parkingLimit.set(Calendar.MINUTE, 0);
+                                parkingLimit.set(Calendar.SECOND, 0);
+                                parkingLimit.set(Calendar.MILLISECOND, 0);
+                            }
+                            mStreets.get(j).setAvailableHours(availHours);
+                            mStreets.get(j).setParkingLimit(parkingLimit);
+                            if (isMarkerSetupMode) {
+                                int result = Utilities.findShortestDistance(mMapCenter4MarkerSetup, mStreets.get(j).getPoints());
+                                if (result != -1) {
+                                    if (result == 0) {
+                                        mNearestPolylineList = new ArrayList<>();
+                                    }
+                                    int count = mNearestPolyPointsList.size() - mNearestPolylineList.size();
+                                    for (int q = 0; q < count; q++) {
+                                        mNearestPolylineList.add(j);
+                                    }
+                                }
                             }
                         } else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mStreets.get(jIndex).getPoly().setColor(color);
+                            if (mStreets.get(j).isVisible()) {
+                                mStreets.get(j).setVisible(false);
+                                if (null != mStreets.get(j).getPoly()) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mStreets.get(jIndex).getPoly().setVisible(false);
+                                        }
+                                    });
                                 }
-                            });
-                        }
-                        if (null == parkingLimit) {
-                            parkingLimit = (null == mParkingStart ? new GregorianCalendar() : (Calendar) mParkingStart.clone());
-                            parkingLimit.add(Calendar.HOUR, Math.abs(availHours));
-                            parkingLimit.set(Calendar.MINUTE, 0);
-                            parkingLimit.set(Calendar.SECOND, 0);
-                            parkingLimit.set(Calendar.MILLISECOND, 0);
-                        }
-                        mStreets.get(j).setAvailableHours(availHours);
-                        mStreets.get(j).setParkingLimit(parkingLimit);
-                        if (isMarkerSetupMode) {
-                            int result = Utilities.findShortestDistance(mMapCenter4MarkerSetup, mStreets.get(j).getPoints());
-                            if (result != -1) {
-                                if (result == 0) {
-                                    mNearestPolylineList = new ArrayList<>();
-                                }
-                                int count = mNearestPolyPointsList.size() - mNearestPolylineList.size();
-                                for (int q = 0; q < count; q++) {
-                                    mNearestPolylineList.add(j);
-                                }
+                            }
+                            if (visibleStreets.contains(j)) {
+                                visibleStreets.remove(Integer.valueOf(j));
                             }
                         }
                     } else {
+                        if (visibleStreets.contains(j)) {
+                            visibleStreets.remove(Integer.valueOf(j));
+                        }
                         if (mStreets.get(j).isVisible()) {
-                            mStreets.get(j).setVisible(false);
                             if (null != mStreets.get(j).getPoly()) {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        mStreets.get(jIndex).getPoly().setVisible(false);
+                                        if (mStreets.get(jIndex).getPoly().isVisible()) {
+                                            mStreets.get(jIndex).getPoly().setVisible(false);
+                                        }
                                     }
                                 });
                             }
-                        }
-                        if (visibleStreets.contains(j)) {
-                            visibleStreets.remove(Integer.valueOf(j));
+                            mStreets.get(j).setVisible(false);
                         }
                     }
-                } else {
-                    if (visibleStreets.contains(j)) {
-                        visibleStreets.remove(Integer.valueOf(j));
-                    }
-                    if (mStreets.get(j).isVisible()) {
-                        if (null != mStreets.get(j).getPoly()) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (mStreets.get(jIndex).getPoly().isVisible()) {
-                                        mStreets.get(jIndex).getPoly().setVisible(false);
-                                    }
-                                }
-                            });
-                        }
-                        mStreets.get(j).setVisible(false);
-                    }
+                    publishProgress((int) ((j / (float) streetSize) * 100));
                 }
-                publishProgress((int) ((j / (float) streetSize) * 100));
+                mViewModel.setStreets(mStreets);
+                mViewModel.setZones(mZones);
             }
-            mViewModel.setStreets(mStreets);
-            mViewModel.setZones(mZones);
             return null;
         }
 
