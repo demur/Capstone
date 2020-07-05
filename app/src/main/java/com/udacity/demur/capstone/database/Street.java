@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.firebase.firestore.DocumentId;
 
 import java.util.Calendar;
 import java.util.List;

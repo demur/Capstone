@@ -42,8 +42,6 @@ public class FirestoreQueryLiveData<T> extends LiveData<List<T>> {
     @Override
     protected void onActive() {
         super.onActive();
-
-        Log.d(TAG, "onActive");
         if (listenerRemovePending) {
             handler.removeCallbacks(removeListener);
         } else {
@@ -55,8 +53,6 @@ public class FirestoreQueryLiveData<T> extends LiveData<List<T>> {
     @Override
     protected void onInactive() {
         super.onInactive();
-
-        Log.d(TAG, "onInactive: ");
         // Listener removal is schedule on a two second delay
         handler.postDelayed(removeListener, 2000);
         listenerRemovePending = true;

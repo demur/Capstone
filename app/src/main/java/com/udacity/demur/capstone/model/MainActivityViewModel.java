@@ -51,12 +51,12 @@ public class MainActivityViewModel extends AndroidViewModel implements Observabl
     private int permitZone = -1;
     private int parkingDuration;
     private int parkingMarkerPolylineIndex;
-    private Boolean hasBeenFailedRenderAttempt;
-    private Boolean isMapRefreshNeeded;
-    private Boolean isMarkerSetupMode;
-    private Boolean isActualTimeUsed;
-    private Boolean isDataPrepared;
-    private Boolean zonesOverCity;
+    private boolean hasBeenFailedRenderAttempt;
+    private boolean isMapRefreshNeeded;
+    private boolean isMarkerSetupMode;
+    private boolean isActualTimeUsed;
+    private boolean isDataPrepared;
+    private boolean zonesOverCity;
     private Date customDate;
 
     public MainActivityViewModel(@NonNull Application application) {
@@ -153,51 +153,51 @@ public class MainActivityViewModel extends AndroidViewModel implements Observabl
         this.parkingMarkerPolylineIndex = parkingMarkerPolylineIndex;
     }
 
-    public Boolean getHasBeenFailedRenderAttempt() {
+    public boolean getHasBeenFailedRenderAttempt() {
         return hasBeenFailedRenderAttempt;
     }
 
-    public void setHasBeenFailedRenderAttempt(Boolean hasBeenFailedRenderAttempt) {
+    public void setHasBeenFailedRenderAttempt(boolean hasBeenFailedRenderAttempt) {
         this.hasBeenFailedRenderAttempt = hasBeenFailedRenderAttempt;
     }
 
-    public Boolean getMapRefreshNeeded() {
+    public boolean getMapRefreshNeeded() {
         return isMapRefreshNeeded;
     }
 
-    public void setMapRefreshNeeded(Boolean mapRefreshNeeded) {
+    public void setMapRefreshNeeded(boolean mapRefreshNeeded) {
         isMapRefreshNeeded = mapRefreshNeeded;
     }
 
-    public Boolean getMarkerSetupMode() {
+    public boolean getMarkerSetupMode() {
         return isMarkerSetupMode;
     }
 
-    public void setMarkerSetupMode(Boolean markerSetupMode) {
+    public void setMarkerSetupMode(boolean markerSetupMode) {
         isMarkerSetupMode = markerSetupMode;
     }
 
-    public Boolean getActualTimeUsed() {
+    public boolean getActualTimeUsed() {
         return isActualTimeUsed;
     }
 
-    public void setActualTimeUsed(Boolean actualTimeUsed) {
+    public void setActualTimeUsed(boolean actualTimeUsed) {
         isActualTimeUsed = actualTimeUsed;
     }
 
-    public Boolean getDataPrepared() {
+    public boolean getDataPrepared() {
         return isDataPrepared;
     }
 
-    public void setDataPrepared(Boolean dataPrepared) {
+    public void setDataPrepared(boolean dataPrepared) {
         isDataPrepared = dataPrepared;
     }
 
-    public Boolean getZonesOverCity() {
+    public boolean getZonesOverCity() {
         return zonesOverCity;
     }
 
-    public void setZonesOverCity(Boolean zonesOverCity) {
+    public void setZonesOverCity(boolean zonesOverCity) {
         this.zonesOverCity = zonesOverCity;
     }
 

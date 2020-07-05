@@ -104,7 +104,7 @@ public class Utilities {
         return hoList;
     }
 
-    public static Boolean isHoliday(Date target, List<Date> dateList) {
+    public static boolean isHoliday(Date target, List<Date> dateList) {
         for (Date date : dateList) {
             if (target.compareTo(date) == 0) {
                 return true;
@@ -169,15 +169,13 @@ public class Utilities {
         return clndr.getTime();
     }
 
-    static private int fullWeek = 24 * 7;
+    private static final int fullWeek = 24 * 7;
 
     public static int getAvailHours(String pattern, Calendar calendar) {
-
-        int dayOfWeek = getDayOfWeek(calendar.getTime());
         int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
         int availHours = 0;
 
-        int posInPattern = (dayOfWeek - 1) * 24 + hourOfDay;
+        int posInPattern = (getDayOfWeek(calendar.getTime()) - 1) * 24 + hourOfDay;
         int nextLimit = pattern.indexOf("1", posInPattern);
         if (nextLimit == -1) {
             int firstLimit = pattern.indexOf("1");
@@ -369,7 +367,7 @@ public class Utilities {
                 + context.getResources().getString(R.string.period_till, MainActivity.markerSDF.format(calEnd.getTime()));
     }
 
-    public static String formatMarkerPlaceHolderTitle(Context context, Calendar calEnd, Boolean allowed) {
+    public static String formatMarkerPlaceHolderTitle(Context context, Calendar calEnd, boolean allowed) {
         return formatMarkerPlaceHolderTitle(context, calEnd, null, allowed);
     }
 

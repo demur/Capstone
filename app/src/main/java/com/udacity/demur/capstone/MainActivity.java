@@ -97,6 +97,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 import static android.graphics.Typeface.BOLD;
 import static android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE;
@@ -137,13 +138,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     List<Integer> visibleStreets = new ArrayList<>();
     List<Integer> detectedZones = new ArrayList<>();
     Bounds mCameraBounds;
-    private Boolean isDataPrepared = false;
-    private Boolean hasBeenFailedRenderAttempt = false;
+    private boolean isDataPrepared = false;
+    private boolean hasBeenFailedRenderAttempt = false;
     public static double mMinDistMarker2Poly = -1;
     public static List<LatLng> mNearestPolyPointsList;
     public List<Integer> mNearestPolylineList;
-    private Boolean isMarkerSetupMode = false;
-    private Boolean mSyntheticCameraMove = false;
+    private boolean isMarkerSetupMode = false;
+    private boolean mSyntheticCameraMove = false;
     private Snackbar snackbar;
     private LatLng mMapCenter4MarkerSetup;
     private int mParkingMarkerPolylineIndex;
@@ -154,12 +155,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final SimpleDateFormat mNavViewSDF = new SimpleDateFormat("ha MM/dd/yy");
     @SuppressLint("SimpleDateFormat")
     public static final SimpleDateFormat markerSDF = new SimpleDateFormat("h:mm'\u00A0'a EEE,'\u00A0'MMM'\u00A0'dd");
-    private Boolean isActualTimeUsed = true;
+    private boolean isActualTimeUsed = true;
     private Date mCustomDate;
     private int mParkingDuration = 2;
-    private Boolean isMapRefreshNeeded = false;
-    private Boolean mFocusOnMarker = false;
-    private Boolean mZonesOverCity = false;
+    private boolean isMapRefreshNeeded = false;
+    private boolean mFocusOnMarker = false;
+    private boolean mZonesOverCity = false;
     private List<Marker> mZoneLabels = new ArrayList<>();
     private ActionBarDrawerToggle drawerToggle;
 
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mContext = this;
 
-        mFocusOnMarker = (getIntent().hasExtra(CAMERA) && getIntent().getStringExtra(CAMERA).equals(FOCUS_ON_MARKER));
+        mFocusOnMarker = getIntent().hasExtra(CAMERA) && Objects.equals(getIntent().getStringExtra(CAMERA), FOCUS_ON_MARKER);
 
         mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         mViewModel.getAllStreets().observe(MainActivity.this, allStreetsObserver);
@@ -195,8 +196,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ActionBar actionbar = getSupportActionBar();
         if (null != actionbar) {
             actionbar.setDisplayHomeAsUpEnabled(true);
+            actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
         drawerToggle = setupDrawerToggle();
         mMainBinding.drawerLayout.addDrawerListener(drawerToggle);
 
@@ -207,8 +208,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        mapFragment.setRetainInstance(true);
+        if (null != mapFragment) {
+            mapFragment.getMapAsync(this);
+            mapFragment.setRetainInstance(true);
+        }
 
         setupNavView();
     }
@@ -237,7 +240,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         prepareData();
 
-        if (mSharedPrefs.contains(SHARED_PREFS_CAM_LAT_KEY) && mSharedPrefs.contains(SHARED_PREFS_CAM_LNG_KEY) && mSharedPrefs.contains(SHARED_PREFS_CAM_ZOOM_KEY)) {
+        if (mSharedPrefs.contains(SHARED_PREFS_CAM_LAT_KEY)
+                && mSharedPrefs.contains(SHARED_PREFS_CAM_LNG_KEY)
+                && mSharedPrefs.contains(SHARED_PREFS_CAM_ZOOM_KEY)) {
             TypedValue typedValue = new TypedValue();
 
             getResources().getValue(R.dimen.map_camera_target_lat, typedValue, true);
@@ -249,7 +254,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(camLat, camLng), camZoom));
         }
-        if (null == mViewModel.getParkingMarker() && mSharedPrefs.contains(SHARED_PREFS_PARKING_LAT_LNG_KEY) && mSharedPrefs.contains(SHARED_PREFS_PARKING_LIMIT_KEY)) {
+        if (null == mViewModel.getParkingMarker()
+                && mSharedPrefs.contains(SHARED_PREFS_PARKING_LAT_LNG_KEY)
+                && mSharedPrefs.contains(SHARED_PREFS_PARKING_LIMIT_KEY)) {
+            //noinspection ConstantConditions
             String[] latLng = mSharedPrefs.getString(SHARED_PREFS_PARKING_LAT_LNG_KEY, "").split(",");
             if (latLng.length == 2) {
                 mParkingLimit = new GregorianCalendar();
@@ -326,7 +334,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @SuppressLint("MissingPermission")
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //noinspection SwitchStatementWithTooFewBranches
         switch (requestCode) {
             case PERMISSION_REQUEST_ACCESS_FINE_LOCATION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -400,8 +409,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         executePolyDrafter();
                                     } catch (IllegalStateException e) {
                                         // layout not yet initialized
+                                        //noinspection ConstantConditions
                                         final View mapView = getSupportFragmentManager().findFragmentById(R.id.map).getView();
-                                        if (mapView.getViewTreeObserver().isAlive()) {
+                                        if (null != mapView && mapView.getViewTreeObserver().isAlive()) {
                                             mapView.getViewTreeObserver().addOnGlobalLayoutListener(
                                                     new ViewTreeObserver.OnGlobalLayoutListener() {
                                                         @Override
@@ -531,6 +541,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
                 mMainBinding.ivTip.setVisibility(View.INVISIBLE);
                 mMainBinding.tvTooltip.setVisibility(View.INVISIBLE);
+                //noinspection ConstantConditions
                 if (null != mSnackbarBinding && null != mSnackbarBinding.actionSave) {
                     mSnackbarBinding.actionSave.setEnabled(false);
                 }
@@ -554,6 +565,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         if (mSyntheticCameraMove) {
             Street targetStreet = mStreets.get(mParkingMarkerPolylineIndex);
+            //noinspection ConstantConditions
             if (null != mSnackbarBinding && null != mSnackbarBinding.actionSave) {
                 mMainBinding.tvTooltip.setText(Utilities.formatMarkerPlaceHolderTitle(mContext, targetStreet.getParkingLimit(), mParkingStart, targetStreet.getAvailableHours() >= 0));
                 mMainBinding.tvTooltip.setVisibility(View.VISIBLE);
@@ -932,7 +944,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -1228,7 +1240,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         mViewModel.setParkingDuration(mParkingDuration);
         mViewModel.setActualTimeUsed(isActualTimeUsed);
         mViewModel.setCustomDate(mCustomDate);
@@ -1244,7 +1256,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
         mStreets = mViewModel.getStreets();
@@ -1291,7 +1303,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 for (Zone zone : allZones) {
                     int zoneId = Integer.parseInt(zone.getId());
                     mZones.append(zoneId, zone);
-                    String[] zBndCoords = zone.getBounds().replaceAll("\\(|\\)", "").split(",");
+                    String[] zBndCoords = zone.getBounds().replaceAll("[()]", "").split(",");
                     if (zBndCoords.length == 4) {
                         mZones.get(zoneId).setBnds(new LatLngBounds(
                                 new LatLng(Double.parseDouble(zBndCoords[0]), Double.parseDouble(zBndCoords[1])),
@@ -1316,7 +1328,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     void handleDataPrepOnObserverExec() {
         isDataPrepared = false;
-        Boolean isInfoWindowShown = false;
+        boolean isInfoWindowShown = false;
         if (null != mViewModel.getParkingMarker()) {
             isInfoWindowShown = mViewModel.getParkingMarker().isInfoWindowShown();
         }
@@ -1348,7 +1360,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         drawerToggle.onConfigurationChanged(newConfig);
     }
@@ -1394,6 +1406,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        mFocusOnMarker = (intent.hasExtra(CAMERA) && intent.getStringExtra(CAMERA).equals(FOCUS_ON_MARKER));
+        mFocusOnMarker = (intent.hasExtra(CAMERA) && Objects.equals(intent.getStringExtra(CAMERA), FOCUS_ON_MARKER));
     }
 }
