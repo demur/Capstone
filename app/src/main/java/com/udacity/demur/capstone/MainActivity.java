@@ -48,7 +48,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.appeaser.sublimepickerlibrary.datepicker.SelectedDate;
 import com.appeaser.sublimepickerlibrary.helpers.SublimeOptions;
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mFocusOnMarker = getIntent().hasExtra(CAMERA) && Objects.equals(getIntent().getStringExtra(CAMERA), FOCUS_ON_MARKER);
 
-        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
         mViewModel.getAllStreets().observe(MainActivity.this, allStreetsObserver);
         mViewModel.getAllZones().observe(MainActivity.this, allZonesObserver);
         mViewModel.getSweepingPatterns().observe(MainActivity.this, sweepingPatternsObserver);
