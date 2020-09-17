@@ -1055,6 +1055,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
+        @SuppressWarnings("unchecked")
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             switch (menuItem.getItemId()) {
