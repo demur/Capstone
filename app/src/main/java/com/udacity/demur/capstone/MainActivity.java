@@ -905,7 +905,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 int[] zoneColors = getResources().getIntArray(R.array.zones);
                 int zoneQuantity = detectedZones.size();
                 IconGenerator iconFactory = new IconGenerator(mContext);
-                iconFactory.setColor(getResources().getColor(R.color.light_gray));
+                iconFactory.setColor(ContextCompat.getColor(mContext, R.color.light_gray));
                 for (int y = 0; y < zoneQuantity; y++) {
                     String zoneTitle = getString(R.string.spinner_option_zone, detectedZones.get(y));
                     SpannableStringBuilder ssbTitle = new SpannableStringBuilder(zoneTitle);
