@@ -456,7 +456,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         mNavDateBinding.navDateTimeIcon.setColorFilter(ContextCompat.getColor(mContext, isChecked ? R.color.nav_view_action_enabled : R.color.nav_view_action_disabled));
                         mNavDateBinding.tvDateTimeDisplay.setTextColor(ContextCompat.getColor(mContext, isChecked ? R.color.nav_view_action_enabled : R.color.nav_view_action_disabled));
 
-                        mNavDateBinding.tvDateTimeDisplay.getBackground().setColorFilter(ContextCompat.getColor(mContext, isChecked ? R.color.nav_view_action_enabled : R.color.nav_view_action_disabled), PorterDuff.Mode.SRC_IN);
+                        mNavDateBinding.tvDateTimeDisplay.getBackground().setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(mContext, isChecked ? R.color.nav_view_action_enabled : R.color.nav_view_action_disabled), PorterDuff.Mode.SRC_IN));
 
                         mNavDateBinding.navDateTimeIcon.setClickable(isChecked);
                         mNavDateBinding.navDateTimeIcon.setFocusable(isChecked);
@@ -527,7 +527,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mNavDateBinding.tvDateTimeDisplay
                 .setTextColor(ContextCompat.getColor(mContext, isActualTimeUsed ? R.color.nav_view_action_disabled : R.color.nav_view_action_enabled));
         mNavDateBinding.tvDateTimeDisplay.getBackground()
-                .setColorFilter(ContextCompat.getColor(mContext, isActualTimeUsed ? R.color.nav_view_action_disabled : R.color.nav_view_action_enabled), PorterDuff.Mode.SRC_IN);
+                .setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(mContext, isActualTimeUsed ? R.color.nav_view_action_disabled : R.color.nav_view_action_enabled), PorterDuff.Mode.SRC_IN));
         mNavDurationBinding.snpDuration.setValue(mParkingDuration);
     }
 
@@ -973,7 +973,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             return;
         }
         Toast toast = Toast.makeText(mContext, R.string.nothing_to_share, Toast.LENGTH_LONG);
-        toast.getView().getBackground().setColorFilter(ContextCompat.getColor(mContext, R.color.snackbar_warning_background), PorterDuff.Mode.SRC_IN);
+        toast.getView().getBackground().setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(mContext, R.color.snackbar_warning_background), PorterDuff.Mode.SRC_IN));
         ((TextView) toast.getView().findViewById(android.R.id.message)).setTextColor(ContextCompat.getColor(mContext, R.color.snackbar_text));
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 200);
         toast.show();
@@ -1162,7 +1162,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Street pSt = mStreets.get(mParkingMarkerPolylineIndex);
                 if (pSt.getAvailableHours() < 0) {
                     Toast toast = Toast.makeText(mContext, R.string.cant_save_prohibited, Toast.LENGTH_LONG);
-                    toast.getView().getBackground().setColorFilter(ContextCompat.getColor(mContext, R.color.snackbar_warning_background), PorterDuff.Mode.SRC_IN);
+                    toast.getView().getBackground().setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(mContext, R.color.snackbar_warning_background), PorterDuff.Mode.SRC_IN));
                     ((TextView) toast.getView().findViewById(android.R.id.message)).setTextColor(ContextCompat.getColor(mContext, R.color.snackbar_text));
                     toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 200);
                     toast.show();
