@@ -8,7 +8,6 @@
         <item name="android:windowEnterTransition" tools:ignore="NewApi">@android:transition/explode</item>
         <item name="android:windowExitTransition" tools:ignore="NewApi">@android:transition/explode</item>
         <item name="sublimePickerStyle">@style/ModdedSublimePickerStyle</item>
-        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="ModdedSublimePickerStyle" parent="SublimePickerStyleLight">
